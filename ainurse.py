@@ -1,12 +1,15 @@
 # Importing flask module in the project is mandatory
 # An object of Flask class is our WSGI application.
 from email.mime import image
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from upload import initiate_digitise_request,check_digitise_results
 from vertexcaller import generate
 from format import process_data
 from util import extract
 from cart import search_api,emptyCart,addToCart
+from flask_cors import CORS
+from googletrans import Translator
+from gtts import gTTS
 # Flask constructor takes the name of
 # current module (__name__) as argument.
 app = Flask(__name__)
@@ -52,6 +55,49 @@ def cart(request_id):
 
     response = {"cart_products":cart_products , "cart_url":"https://healthplus.flipkart.com/cart/details" , "vertex_response": vertex_response}
     return response
+
+@app.route('/translate', methods=['POST'])
+def translate():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # Retrieve the JSON data from the request
+        data = request.get_json()
+        
+        # Extract text, src, and dest from the JSON data
+        text = data.get('text')
+        src_lang = data.get('src', 'en')  # Default source language is English
+        dest_lang = data.get('dest', 'hi')  # Default destination language is Hindi
+        
+        # Translate the text
+        translator = Translator()
+        translated_text = translator.translate(text, src=src_lang, dest=dest_lang)
+        final_translated_text = translated_text.text
+        
+        # Return the translated text as JSON response
+        return jsonify({"translatedText": final_translated_text})
+    else:
+        return jsonify({'error': 'Request must contain JSON data.'}), 400
+
+@app.route('/audio', methods=['POST'])
+def audio():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # Retrieve the JSON data from the request
+        data = request.get_json()
+        path = '/Applications/XAMPP/xamppfiles/htdocs/fkh_plus_hackathon/audios/'
+        
+        # Extract text, src, and dest from the JSON data
+        text = data.get('text')
+        lang = data.get('lang', 'en')  # Default source language is English
+        file_name = data.get('fileName')
+        
+        obj= gTTS(text=text,slow = False, lang= lang)
+        obj.save(path + file_name)
+        
+        # Return the translated text as JSON response
+        return jsonify({"audioGenerated":"true","fileName":'/fkh_plus_hackathon/audios/'+ file_name})
+    else:
+        return jsonify({'error': 'Request must contain JSON data.'}), 400
 
 
 # main driver function
