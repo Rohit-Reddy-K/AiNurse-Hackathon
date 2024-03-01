@@ -1,0 +1,292 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+    <head>
+        <!-- meta data -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+        <!--font-family-->
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&amp;subset=devanagari,latin-ext" rel="stylesheet">
+        
+        <!-- title of site -->
+        <title>Flipkart Health PLus</title>
+
+        <!-- For favicon png -->
+        <link rel="shortcut icon" type="image/icon" href="assets/logo/favicon.png"/>
+       
+        <!--font-awesome.min.css-->
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+        <!--flat icon css-->
+        <link rel="stylesheet" href="assets/css/flaticon.css">
+
+        <!--animate.css-->
+        <link rel="stylesheet" href="assets/css/animate.css">
+
+        <!--owl.carousel.css-->
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+        
+        <!--bootstrap.min.css-->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        
+        <!-- bootsnav -->
+        <link rel="stylesheet" href="assets/css/bootsnav.css" > 
+        
+        <!--style.css-->
+        <link rel="stylesheet" href="assets/css/style.css">
+        
+        <!--responsive.css-->
+        <link rel="stylesheet" href="assets/css/responsive.css">
+        
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+        
+        <!-- top-area Start -->
+        <header class="top-area">
+            <div class="header-area">
+                <!-- Start Navigation -->
+                <nav class="navbar navbar-default bootsnav navbar-fixed dark no-background">
+
+                    <div class="container">
+
+                        <!-- Start Header Navigation -->
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="index.html">Flipkart Health Plus</a>
+                        </div><!--/.navbar-header-->
+                        <!-- End Header Navigation -->
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                    </div><!--/.container-->
+                </nav><!--/nav-->
+                <!-- End Navigation -->
+            </div><!--/.header-area-->
+
+            <div class="clearfix"></div>
+
+        </header><!-- /.top-area-->
+        <!-- top-area End -->
+    
+        <!--welcome-hero start -->
+        <section id="welcome-hero" class="welcome-hero">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <div class="header-text">
+                            <h2>hi <span>,</span> i am  your <br> health <br> advocate <span>.</span>   </h2>
+                            <p>Upload Prescription to order medicines</p>
+                            <!--<a href="assets/download/browney.txt" download>Upload Prescription</a>-->
+                            <!-- <form id = "uploadPrescriptionForm"> -->
+                                <label for="getFile" class="custom-file-upload" id="fileLabel">Upload Prescription</label>
+                                <input type='file' id="getFile" style="display:none" onchange="updateFileName(this)">
+                                <button type="button" style="display:none" onclick="getResponse()">Submit</button>
+                            <!-- </form> -->
+                            <script>
+                                function updateFileName(input) {
+                                    var fileName = input.files[0].name;
+                                    document.getElementById('fileLabel').innerText = fileName;
+                                    document.querySelector('button').style.display = '';
+                                }
+                            
+                                async function getResponse() {
+                                    //var formData = new FormData(document.getElementById('uploadPrescriptionForm'));
+                                    try {
+                                        debugger
+                                        await uploadPrescriptionForm();
+                                        debugger
+                                        var uploadPrescriptionFormResponse = JSON.parse(localStorage.getItem('uploadPrescriptionFormResponse'));
+                                        console.log("uploadPrescriptionFormResponse.status:", uploadPrescriptionFormResponse.status);
+                                        console.log("uploadPrescriptionFormResponse.status===true:", uploadPrescriptionFormResponse.status  === true);
+										var request_id = uploadPrescriptionFormResponse.request_id
+                                        if (uploadPrescriptionFormResponse.status === true) {
+                                            const respjson = await fetch('http://127.0.0.1:5000/cart/{$request_id}', {
+                                                method: 'POST'
+                                                //,body: formData
+                                            })
+                                            const response = await respjson.json();
+                                            localStorage.setItem('apiResponse', JSON.stringify(response));
+                                            window.location.href = 'uploadPrescriptionSuccess.html';
+											// .then(response => {
+											// 	// Simulate a delay of 5 seconds (5000 milliseconds)
+											// 	return new Promise(resolve => setTimeout(() => resolve(response), 10000));
+											// 	})
+                                            // .then(response => {
+												
+                                            //     console.log("Response is: ", response);
+                                            //     if (!response.ok) {
+                                            //         throw new Error('Failed to submit form');
+                                            //     }
+                                            //     return response.json();
+                                            // })
+                                            // .then(data => {
+                                            //     // Redirect to a new page or handle success response
+                                            //     localStorage.setItem('apiResponse', JSON.stringify(data));
+                                            //     console.log('Form submitted successfully');
+                                            //     window.location.href = 'uploadPrescriptionSuccess.html';
+                                            // })
+                                            // .catch(error => {
+                                            //     console.error('Error:', error);
+                                            //     // Handle error, display error message, etc.
+                                            // });
+                                        }
+                                    } catch (error) {
+                                            console.error('An error occurred:', error.message);
+                                    }
+
+                                }
+                                async function uploadPrescriptionForm() {
+                                    //var formData = new FormData(document.getElementById('uploadPrescriptionForm'));
+                                    debugger
+                                    var requestData = {
+                                             image_path: document.getElementById('fileLabel').textContent
+                                            // image_path: "FK-Health-Plus-1.jpg"
+                                         };
+                                    const apiresponse = await fetch('http://127.0.0.1:5000/upload', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(requestData)
+                                    })
+                                    const response = await apiresponse.json();
+                                    debugger
+                                    localStorage.setItem('uploadPrescriptionFormResponse', JSON.stringify(response));
+									// .then(response => {
+									// 			// Simulate a delay of 5 seconds (5000 milliseconds)
+									// 			return new Promise(resolve => setTimeout(() => resolve(response), 1000));
+									// 			})
+                                    // .then(response => {
+                                    //     console.log("Upload Response is: ", response);
+                                    //     if (!response.ok) {
+                                    //         throw new Error('Failed to submit form');
+                                    //     }
+                                    //     console.log("Upload response.json() is: ", response.json());
+                                    //     return response.json();
+                                    // })
+                                    // .then(data => {
+										
+                                    //     // Redirect to a new page or handle success response
+                                    //     console.log("JSON.stringify(data) is: ", JSON.stringify(data));
+                                    //     localStorage.setItem('uploadPrescriptionFormResponse', JSON.stringify(data));
+                                    //     console.log('Form submitted successfully');
+                                    // })
+                                    // .catch(error => {
+                                    //     console.error('Error:', error);
+                                    //     // Handle error, display error message, etc.
+                                    // });
+                                    
+                                }
+
+                                // function submitForm1() {
+                                //  // First API call
+                                //  fetch('http://127.0.0.1:5000/upload', {
+                                //      method: 'GET'
+                                //  })
+                                //  .then(response1 => {
+                                //      if (!response1.ok) {
+                                //          throw new Error('Failed to fetch API1');
+                                //      }
+                                //      // Parse response data from API1
+                                //      return response1.json();
+                                //  })
+                                //  .then(data1 => {
+                                //      // Store data from API1 in localStorage
+                                //      localStorage.setItem('apiResponse1', JSON.stringify(data1));
+                                //      var apiResponse1 = JSON.parse(JSON.stringify(data1));
+                                //      console.log("apiResponse1:", apiResponse1)
+                                //      //if (apiResponse1.uploaded == "true") {
+                                //          var rxId = apiResponse1.rxId;
+                                //          // Second API call
+                                //          return fetch('http://127.0.0.1:5000/hello', {
+                                //              method: 'GET'
+                                //          });
+                                //      // } 
+                                //      // return Promise.resolve();
+                                        
+                                //  })
+                                //  .then(response2 => {
+                                //      if (response2 && !response2.ok) {
+                                //          throw new Error('Failed to fetch API2');
+                                //      }
+                                //      // Parse response data from API2
+                                //      return response2.json();
+                                //  })
+                                //  .then(data2 => {
+                                //      // Store data from API2 in localStorage
+                                //      localStorage.setItem('apiResponse2', JSON.stringify(data2));
+                                        
+                                //      // Redirect to a new page or perform further actions
+                                //      console.log('Both APIs called successfully');
+                                //      window.location.href = 'uploadPrescriptionSuccess.html';
+                                //  })
+                                //  .catch(error => {
+                                //      console.error('Error:', error);
+                                //      // Handle error, display error message, etc.
+                                //  });
+                                // }
+
+                            </script>
+    
+                            
+                        </div><!--/.header-text-->
+                    </div><!--/.col-->
+                </div><!-- /.row-->
+            </div><!-- /.container-->
+
+        </section><!--/.welcome-hero-->
+        <!--welcome-hero end -->
+        
+        <!-- Include all js compiled plugins (below), or include individual files as needed -->
+
+        <script src="assets/js/jquery.js"></script>
+        
+        <!--modernizr.min.js-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+        
+        <!--bootstrap.min.js-->
+        <script src="assets/js/bootstrap.min.js"></script>
+        
+        <!-- bootsnav js -->
+        <script src="assets/js/bootsnav.js"></script>
+        
+        <!-- jquery.sticky.js -->
+        <script src="assets/js/jquery.sticky.js"></script>
+        
+        <!-- for progress bar start-->
+
+        <!-- progressbar js -->
+        <script src="assets/js/progressbar.js"></script>
+
+        <!-- appear js -->
+        <script src="assets/js/jquery.appear.js"></script>
+
+        <!-- for progress bar end -->
+
+        <!--owl.carousel.js-->
+        <script src="assets/js/owl.carousel.min.js"></script>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        
+        
+        <!--Custom JS-->
+        <script src="assets/js/custom.js"></script>
+        
+    </body>
+    
+</html>
